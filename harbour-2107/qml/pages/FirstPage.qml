@@ -9,6 +9,7 @@ Page {
     id: page
     allowedOrientations: Orientation.Landscape | Orientation.LandscapeInverted
 
+
     property bool running: false // True if game is running
     property real speed: 3.5 // Movement speed
     property int offset: rect.height - background.height
@@ -274,6 +275,7 @@ Page {
 
         // Pause if closed
         if(!Qt.application.active){
+            message.text = 'Tap to continue.'
             pause();
         }
 
@@ -436,11 +438,11 @@ Page {
 
     // Spawns doves intelligently
     function autospawn(){
-        var count = Math.floor(Math.random()*3)+1; // Spawn between 1 and 3 doves
+        var count = Math.floor(Math.random()*2)+1; // Spawn 1 or 2 doves
         for(var i = 0; i < count; i++){
-            var spawnpos = terrainindex + realpix(page.width) + 3.5*i;
-            if(spawnpos < terrain.length && terrain[spawnpos] > 0 && terrain[spawnpos] === terrain[spawnpos + 1] && terrain[spawnpos] === terrain[spawnpos + 2]){
-                spawndove(page.width + gamepix(3*i), pixfrombottom(terrain[spawnpos], 3));
+            var spawnpos = terrainindex + Math.floor(realpix(page.width)) + 4*i;
+            if(terrain[spawnpos] > 0 && terrain[spawnpos] === terrain[spawnpos + 1] && terrain[spawnpos] === terrain[spawnpos + 2]){
+                spawndove(page.width + gamepix(4*i), pixfrombottom(terrain[spawnpos], 3));
             }
         }
     }
@@ -711,6 +713,9 @@ Page {
     // Shows objective completed message
     function obj_completed(lvl){
 
+        // Stats & Level changes are only written to DB on reset to avoid lag
+        // -> Per-game progress is lost on crash or exit while game is running
+
         // Avoid label overlap
         if(newhighscore.visible && (newhighscore.x + newhighscore.width) > page.width){
             completed.x = newhighscore.x + newhighscore.width * 1.5;
@@ -721,28 +726,24 @@ Page {
 
         completed.text = 'Level '+(lvl+1)+' completed!';
         completed.visible = true;
-        DB.setstat(6, lvl + 1); // Save progress
 
         // Load & display new objective
         stats.level = lvl + 1;
-        stats.objective_count = stats.lvl_count[stats.level];
-        stats.objective_type = stats.lvl_type[stats.level];
+        stats.objective_count = stats.lvl_count[lvl + 1];
+        stats.objective_type = stats.lvl_type[lvl + 1];
+
         // Set base count for objectives on total stats
         if(stats.objective_type === 1){ // Total birds
             stats.objective_basecount = stats.birds_scared + stats.birds_scared_total;
-            DB.setstat(9, stats.objective_basecount);
         }
         else if(stats.objective_type === 3){ // Total distance
             stats.objective_basecount = stats.distance + stats.distance_total;
-            DB.setstat(9, stats.objective_basecount);
         }
         else if(stats.objective_type === 5){ // Total jumps
             stats.objective_basecount = stats.jumps + stats.jumps_total;
-            DB.setstat(9, stats.objective_basecount);
         }
         else if(stats.objective_type === 7){ // Games played
             stats.objective_basecount = stats.games_played;
-            DB.setstat(9, stats.objective_basecount);
         }
 
         objective.visible = true;
@@ -854,6 +855,8 @@ Page {
         DB.setstat(0, stats.birds_scared_total);
         DB.setstat(2, stats.distance_total);
         DB.setstat(4, stats.jumps_total);
+        DB.setstat(9, stats.objective_basecount);
+        DB.setstat(6, stats.level);
     }
 
     // Moves messages (highscore, objective, objective completed) along screen
