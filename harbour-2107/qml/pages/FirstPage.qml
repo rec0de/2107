@@ -438,7 +438,7 @@ Page {
 
     // Spawns doves intelligently
     function autospawn(){
-        var count = Math.floor(Math.random()*2)+1; // Spawn 1 or 2 doves
+        var count = Math.floor(Math.random()*3)+1; // Spawn 1 - 3 doves
         for(var i = 0; i < count; i++){
             var spawnpos = terrainindex + Math.floor(realpix(page.width)) + 4*i;
             if(terrain[spawnpos] > 0 && terrain[spawnpos] === terrain[spawnpos + 1] && terrain[spawnpos] === terrain[spawnpos + 2]){
