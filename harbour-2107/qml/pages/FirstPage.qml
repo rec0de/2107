@@ -231,7 +231,6 @@ Page {
             player.y = playerground;
             player.vspeed = 0;
             player.djump = true;
-            emitter.pulse(10)
         }
         else if(player.y > playerground){ // Sideways collision
             player.x -= page.speed;
@@ -240,7 +239,6 @@ Page {
             if(player.y > groundpix1){
                 player.y = groundpix1;
                 player.vspeed = 0;
-                emitter.pulse(10)
             }
 
         }
@@ -438,7 +436,7 @@ Page {
 
     // Spawns doves intelligently
     function autospawn(){
-        var count = Math.floor(Math.random()*3)+1; // Spawn 1 - 3 doves
+        var count = Math.floor(Math.random()*2)+1; // Spawn 1 - 2 doves
         for(var i = 0; i < count; i++){
             var spawnpos = terrainindex + Math.floor(realpix(page.width)) + 4*i;
             if(terrain[spawnpos] > 0 && terrain[spawnpos] === terrain[spawnpos + 1] && terrain[spawnpos] === terrain[spawnpos + 2]){
@@ -566,6 +564,7 @@ Page {
 
     // Calculates grey shade of background depending on current time
     function timecycle(){
+
         var currentTime = new Date ( );
 
         var currentHours = currentTime.getHours();
@@ -936,7 +935,7 @@ Page {
     Timer {
         id: pauseticker
         interval: 35
-        running: !page.running && Qt.application.active
+        running: !page.running && Qt.application.active && pageStack.currentPage === page
         repeat: true
         onTriggered: pausetick()
     }
@@ -954,7 +953,7 @@ Page {
     Timer {
         id: daytime
         interval: 3000
-        running: Qt.application.active
+        running: Qt.application.active && pageStack.currentPage === page
         repeat: true
         onTriggered: timecycle()
     }
@@ -1298,6 +1297,7 @@ Page {
     ParticleSystem{
         anchors.fill: parent
         z: 6
+        running: page.running
 
         ImageParticle{
             source: '../img/particle.png'
@@ -1313,7 +1313,7 @@ Page {
 
         Emitter{
             id: emitter
-            enabled: false
+            enabled: player.onground
             height: gamepix(1)
             width: gamepix(1)
             y: player.y + gamepix(player.sourceSize.height)
