@@ -682,14 +682,18 @@ Page {
 
     // Resumes game
     function resume(){
-        backgroundloop.play();
+
+        // Reload all settings from DB
+        updatesettings();
+
+        if(!page.mute){
+            backgroundloop.play();
+        }
         page.running = true;
         message.visible = false;
         menu.visible = false;
         pausebutton.visible = true;
         menu_back.color = 'transparent';
-        // Reload all settings from DB
-        updatesettings();
     }
 
     // Coverts numbers to easily readable format
@@ -888,6 +892,7 @@ Page {
 
     // Loads settings from DB, called on load & resume
     function updatesettings(){
+
         // Update character image
         player.source = '../img/player'+(DB.getstat(7)+1)+'.png';
 
@@ -909,7 +914,7 @@ Page {
         id: backgroundloop
         source: '../aud/background_looped.mp3'
         loops: Audio.Infinite
-        muted: page.mute || page.tutorial
+        muted: page.mute
         // Auido is looped in file a few times already because there is an ugly cut when looping here.
     }
 
@@ -1029,7 +1034,7 @@ Page {
                     var ycurrVel = (mouse.y-yPrev);
                     yvelocity = (yvelocity + ycurrVel)/2.0;
                     yPrev = mouse.y;
-                    if(yvelocity > 15 && Math.abs(yStart - mouse.y) > parent.width * 0.2){
+                    if(yvelocity > 12 && Math.abs(yStart - mouse.y) > parent.width * 0.1){
 
                         // Slam tutorial
                         if(tutorial && tut_index === 2){
@@ -1055,7 +1060,6 @@ Page {
                     touch();
                 }
             }
-
         }
     }
 
@@ -1364,7 +1368,7 @@ Page {
         visible: page.tutorial
 
         font.pixelSize: Theme.fontSizeMedium
-        text: 'Skip tutorial';
+        text: 'Skip tutorial'
 
         MouseArea{
             anchors.fill: parent
