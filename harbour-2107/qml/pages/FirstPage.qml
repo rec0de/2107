@@ -60,7 +60,6 @@ Page {
         stats.distance_total = DB.getstat(2);
         stats.jumps_total = DB.getstat(4);
         stats.highscore = DB.getstat(3);
-        stats.objective_basecount = DB.getstat(9);
         stats.games_played = DB.getstat(12);
 
         // Load settings
@@ -604,6 +603,12 @@ Page {
             if(stats.birds_scared_total + stats.birds_scared >= stats.objective_count + stats.objective_basecount){
                 obj_completed(stats.level);
             }
+            else if(stats.birds_scared_total + stats.birds_scared < stats.objective_basecount){
+                DB.setstat(9, stats.birds_scared_total); // Database fucked up somehow, reset basecount to birds_scared_total
+                stats.objective_basecount = stats.birds_scared_total;
+                pause();
+                message.text = 'Sorry, 2107 encountered a problem. It should be fixed now.';
+            }
             break
         case 2:
             if(realpix(stats.distance) >= stats.objective_count){
@@ -614,6 +619,13 @@ Page {
             if(realpix(stats.distance_total + stats.distance - stats.objective_basecount) >= stats.objective_count){
                 obj_completed(stats.level);
             }
+            else if(realpix(stats.distance_total + stats.distance) < realpix(stats.objective_basecount)){
+                DB.setstat(9, stats.distance_total); // Database fucked up somehow, reset basecount to distance_total
+                stats.objective_basecount = stats.distance_total;
+                pause();
+                message.text = 'Sorry, 2107 encountered a problem. It should be fixed now.';
+            }
+
             break
         case 4:
             if(stats.jumps >= stats.objective_count){
@@ -624,12 +636,24 @@ Page {
             if(stats.jumps_total + stats.jumps >= stats.objective_count + stats.objective_basecount){
                 obj_completed(stats.level);
             }
+            else if(stats.jumps_total + stats.jumps < stats.objective_basecount){
+                DB.setstat(9, stats.jumps_total); // Database fucked up somehow, reset basecount to jumps_total
+                stats.objective_basecount = stats.jumps_total;
+                pause();
+                message.text = 'Sorry, 2107 encountered a problem. It should be fixed now.';
+            }
             break
         case 6: // Unfulfillable
             break
         case 7:
             if(stats.games_played >= stats.objective_count + stats.objective_basecount){
                 obj_completed(stats.level);
+            }
+            else if(stats.games_played < stats.objective_basecount){
+                DB.setstat(9, stats.games_played); // Database fucked up somehow, reset basecount to games_played
+                stats.objective_basecount = stats.games_played;
+                pause();
+                message.text = 'Sorry, 2107 encountered a problem. It should be fixed now.';
             }
             break
         }
@@ -906,8 +930,15 @@ Page {
 
         // Load objective
         stats.level = DB.getstat(6);
+        stats.objective_basecount = DB.getstat(9);
         stats.objective_count = stats.lvl_count[stats.level];
         stats.objective_type = stats.lvl_type[stats.level];
+
+        // Load all total stats to avoid anomalies
+        stats.birds_scared_total = DB.getstat(0);
+        stats.jumps_total = DB.getstat(4);
+        stats.distance_total = DB.getstat(2);
+        stats.games_played = DB.getstat(12);
     }
 
     Audio{

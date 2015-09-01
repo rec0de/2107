@@ -75,6 +75,7 @@ Page {
                 id: remorse2
                 onTriggered: {
                     DB.setstat(6, 0);
+                    DB.setstat(9, 0);
                 }
             }
 

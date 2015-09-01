@@ -31,6 +31,7 @@ function initialize() {
                 function(tx) {
                     tx.executeSql('CREATE TABLE IF NOT EXISTS stats (uid INTEGER UNIQUE, value INTEGER)');
                 });
+    sanitize();
 }
 
 // This function is used to update stats
@@ -64,6 +65,15 @@ function getstat(uid) {
         }
     })
     return res;
+}
+
+// Attempts to fix data anomalies
+function sanitize(){
+    for(var i = 0; i <= 12; i++){
+        if(getstat(i) < 0){
+            setstat(i, 0);
+        }
+    }
 }
 
 
