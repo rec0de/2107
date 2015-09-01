@@ -81,4 +81,20 @@ Image {
         }
     }
 
+    Timer{
+        id: positionfixer
+        running: true
+        interval: 300
+        repeat: false
+        onTriggered: {
+            // Check that bird is not hovering above ground
+            if(!flying){
+                var expheight = pixfrombottom(page.terrain[page.terrainindex + Math.ceil(realpix(x))], 3);
+                if(expheight !== y){
+                    y = expheight;
+                }
+            }
+        }
+    }
+
 }

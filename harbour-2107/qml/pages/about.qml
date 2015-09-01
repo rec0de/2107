@@ -308,7 +308,7 @@ Page {
 
             Label {
                 id: thanks
-                text: 'Database derived from \'noto\' by leszek.<br>Inspired by \'Canabalt\', \'Alto\'s Adventure\' and \'Papers Please\'.<br> Thanks to all of you!'
+                text: 'Database derived from \'noto\' by leszek. Thanks to wellef for helping me with some bugs.<br>Inspired by \'Canabalt\', \'Alto\'s Adventure\' and \'Papers Please\'.<br> Thanks to all of you!'
                 font.pixelSize: Theme.fontSizeSmall
                 wrapMode: Text.WordWrap
                 anchors {

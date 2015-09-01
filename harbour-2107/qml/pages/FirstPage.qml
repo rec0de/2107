@@ -439,7 +439,7 @@ Page {
         for(var i = 0; i < count; i++){
             var spawnpos = terrainindex + Math.floor(realpix(page.width)) + 4*i;
             if(terrain[spawnpos] > 0 && terrain[spawnpos] === terrain[spawnpos + 1] && terrain[spawnpos] === terrain[spawnpos + 2]){
-                spawndove(page.width + gamepix(4*i), pixfrombottom(terrain[spawnpos], 3));
+                spawndove(gamepix(Math.floor(realpix(page.width)) + 4*i), pixfrombottom(terrain[spawnpos], 3));
             }
         }
     }
@@ -1023,7 +1023,7 @@ Page {
     // Shows tutorial completition message
     Timer {
         id: tut_timer_done
-        interval: 1000
+        interval: 600
         running: false
         repeat: false
         onTriggered: {
