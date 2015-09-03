@@ -16,7 +16,7 @@ Page {
     property real gravity: 0.04 // Downward accelleration per tick
     property var birds: new Array() // Contains spawned doves
     property var track: new Array() // Contains game track
-    property int trackcount: 21 // Number of available tracks
+    property int trackcount: 22 // Number of available tracks
     property int glitch: 0 // O: No glitch 1: Lines Glitch 2: Overlay Glitch
     property var terrain: Array() // Parcour height for each gamepixel
     property int terrainindex: 0 // Height of gamepixel at x = 0
@@ -551,6 +551,10 @@ Page {
         else if(id === 20){
             comp_val = Array(10, 5, 16, -10, 20,  6, 11, -10, 21, 22, 21, 12, 11, -10, 17, 22, 10);
             comp_num = Array( 9, 7, 13,  14, 20, 10, 15,  10,  1, 27,  1, 16,  1,   8, 11, 22, 15);
+        }
+        else if(id === 21){
+            comp_val = Array(10, 14, 10, 21, -10, 24,  9, 14, -10, 16, 17, 23, 24, 23,  4, -10,  7, 11, 10, 9, 8, 7, -10, 10);
+            comp_num = Array( 6,  9,  3, 18,  11, 13, 17,  9,   8,  1, 15,  1, 16,  1, 16,   9, 11, 13,  2, 2, 2, 1,   7,  9);
         }
 
 

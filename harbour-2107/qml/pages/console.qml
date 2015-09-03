@@ -50,7 +50,7 @@ Page {
                 label.text += 'log memdump<br>';
             }
             else if(state === 'post'){
-                label.text += 'issue1 issue2 issue3 issue4 issue5<br>';
+                label.text += 'issue1 issue2 issue3 issue4 issue5 issue6<br>';
             }
             else if(state === 'mail'){
                 label.text += 'application devmode hey thepost vacation verification<br>';
@@ -181,6 +181,11 @@ Page {
                 image.visible = true;
                 label.text += 'Displaying content.<br>';
             }
+            else if(file === 'issue6'){
+                image.source = '../img/thepost/thepost_6.png';
+                image.visible = true;
+                label.text += 'Displaying content.<br>';
+            }
             else{
                 label.text += 'view: File does not exist.<br>';
             }
@@ -205,7 +210,7 @@ Page {
                 label.text += '[https://tolmail.com]<br>TOLmail - your email provider<br><br>Looking for a professional, free &amp; trustworthy personal email provider? TOLmail is your best choice for reliable, secure online communication.<br><br>Your browser does not support javascript. To log in, please enable it or try a modern browser.<br>';
             }
             else if(url === 'thepost.net'){
-                label.text += '[http://thepost.net]<br>The Post online<br>Quality journalism since 2072<br><br>Latest articles<br>The General Elections<br>We check the facts and figures to tell you everything you need to know about the upcoming elections and take a deep dive into our political history.<br><br>Modern Art Exhibition<br>In two days a new, unconventional exhibition of the NMAM opens: Set not in a museum but in the deep forest, it allows visitors to experience modern art in symbiosis with pure nature.<br>';
+                label.text += '[http://thepost.net]<br>The Post online<br>Quality journalism since 2072<br><br>Latest articles<br>Moose damnages Art<br>During the unconventional art exhibition in the deep forest we reported on earlier, a single moose appeared and collided with several art pieces. A particular work recently aquired by the museum was irreparably destroyed.<br><br>Cyberattacks continue<br>Over the past days, new targets of the recent cyberattacks, which have been described by Experts as \'never before seen\', have been uncovered. As of now, no terrorist group or nationstate claims responsibility for the attacks.<br>';
             }
             else if(url === 'twinex.com'){
                 label.text += '[https://twinex.com]<br>Twinex Inc.<br><br>Twinex Inc. is the leading provider of special use chemical compounds worldwide. Delivering whatever you need whereever you need it with more than 60 years of business experience. Our clients include multiple nationstates, leading corporations and other global players.<br><br>Press releases: pr.twinex.com<br>';
@@ -214,7 +219,7 @@ Page {
                 label.text += '[http://tolmail.securepayment.tk]<br>This domain has been seized due to illegal activity including copyright infringement and distribution of malicious code.<br>';
             }
             else if(url === 'pr.twinex.com'){
-                label.text += '[https://pr.twinex.com]<br>Twinex Inc. - Press<br><br>21.12.2106<br>We are proud to announce that Twinex Inc. is now supporting multiple local institutions contributing to our common culture. Among these are Independent Weekly, The Post and The Informer.<br><br>04.10.2106<br>Contrary to several accusations in the media, Twinex is not and has never been in any business relation with the Santos regime and condems the use of CW agents and the violations of human rights.<br><br>16.03.2106<br>Twinex Inc. is now a part of the TOL family. We look forward to joining the team and sharing our expertise with them.<br>';
+                label.text += '[https://pr.twinex.com]<br>Twinex Inc. - Press<br><br>05.02.2107<br>We can neither confirm nor deny reports that Twinex Inc. is target of ongoing network attacks.<br><br>21.12.2106<br>We are proud to announce that Twinex Inc. is now supporting multiple local institutions contributing to our common culture. Among these are Independent Weekly, The Post and The Informer.<br><br>04.10.2106<br>Contrary to several accusations in the media, Twinex is not and has never been in any business relation with the Santos regime and condems the use of CW agents and the violations of human rights.<br><br>16.03.2106<br>Twinex Inc. is now a part of the TOL family. We look forward to joining the team and sharing our expertise with them.<br>';
             }
             else{
                 label.text += 'lynx: Server not found.<br>';

@@ -7,7 +7,7 @@ import '../data.js' as DB
 Page {
     id: page
     allowedOrientations: Orientation.All
-    property int charcount: 4
+    property int charcount: 6
 
     onWidthChanged: layout()
     onHeightChanged: layout() // I don't know why I need this, but apparently onWidthChanged is not called when changing from landscape to portrait
@@ -20,7 +20,7 @@ Page {
 
         // Activate special moose character if unlocked
         if(DB.getstat(10) === 1){
-            charcount = 5;
+            charcount = 7;
         }
 
         // Load mute state
@@ -132,7 +132,7 @@ Page {
                     anchors.horizontalCenter: parent.horizontalCenter
                     font.pixelSize: Theme.fontSizeExtraSmall
                     text: names[Math.abs(character.num)]
-                    property var names: new Array('z3r0', 'da3m0n', '0x2A', '0x83B', 'hirvi')
+                    property var names: new Array('z3r0', 'da3m0n', '0x2A', '0x83B', 'c0r3', 'gh0s7', 'hirvi')
                 }
 
                 SectionHeader {
@@ -256,7 +256,7 @@ Page {
                         anchors.horizontalCenter: parent.horizontalCenter
                         font.pixelSize: Theme.fontSizeExtraSmall
                         text: names[Math.abs(character.num)]
-                        property var names: new Array('z3r0', 'da3m0n', '0x2A', '0x83B', 'hirvi')
+                        property var names: new Array('z3r0', 'da3m0n', '0x2A', '0x83B', 'c0r3', 'gh0s7', 'hirvi')
                     }
                 }
 
