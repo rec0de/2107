@@ -8,7 +8,7 @@ import '../data.js' as DB
 Page {
     id: page
     allowedOrientations: Orientation.Landscape | Orientation.LandscapeInverted
-
+    clip: true
 
     property bool running: false // True if game is running
     property real speed: 3.5 // Movement speed
