@@ -386,7 +386,7 @@ Page {
     // Prepares new game start
     function reset(){
         pause();
-        message.text = 'You died. Score: '+Math.round(realpix(stats.distance));
+        message.text = 'Tap to restart. Score: '+numconvert(Math.round(realpix(stats.distance)));
 
         // Set new track & reset player position
         resetterrain();
@@ -1162,7 +1162,7 @@ Page {
         color: 'transparent'
         width: gamepix(7)
         height: gamepix(7)
-        x: 0
+        x: page.width - gamepix(7)
         y: 0
         z: 6
         id: pausebutton
