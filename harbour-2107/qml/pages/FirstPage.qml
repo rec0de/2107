@@ -44,8 +44,8 @@ Page {
         property int objective_basecount: 0
         property int level: 0
 
-        property var lvl_type:  new Array(3,   7,  4, 2,   1,  7, 5,   0,  2,    1,   4,  7,  3,     0,  5,    2,    3,     1,   4,   6)
-        property var lvl_count: new Array(100, 2, 10, 750, 40, 5, 100, 25, 1000, 150, 50, 10, 20000, 50, 1000, 2500, 50000, 750, 150, 0)
+        property var lvl_type:  new Array(3,   7,  4, 2,   1,  7, 5,   0,  2,    1,   4,  7,  3,     0,  5,    2,    3,     1,   4,   5,    3,     0,  6)
+        property var lvl_count: new Array(100, 2, 10, 750, 40, 5, 100, 25, 1000, 150, 50, 10, 20000, 50, 1000, 2500, 50000, 750, 150, 2000, 75000, 80, 0)
 
         property int highscore: 0
         property bool highscore_muted: false // Disables high score messages
