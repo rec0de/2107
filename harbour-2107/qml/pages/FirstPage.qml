@@ -271,7 +271,7 @@ Page {
     function slowtick(){
 
         // Pause if closed
-        if(!Qt.application.active){
+        if(Qt.application.state !== Qt.ApplicationActive){
             message.text = 'Tap to continue.'
             pause();
         }
