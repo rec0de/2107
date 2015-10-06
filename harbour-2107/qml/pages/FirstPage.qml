@@ -395,7 +395,9 @@ Page {
         resetstats();
 
         // Reset music
-        backgroundloop.stop();
+        if(!page.mute){
+            backgroundloop.stop();
+        }
 
         // End glitching
         page.glitch = 0;
@@ -707,7 +709,9 @@ Page {
 
     // Pauses game
     function pause(){
-        backgroundloop.pause();
+        if(!page.mute){
+            backgroundloop.pause();
+        }
         page.running = false;
         message.visible = true;
     }
