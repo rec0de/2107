@@ -271,7 +271,7 @@ Page {
             }
 
             Label {
-                text:   '<i>Arcade Music Loop</i> - Joshuaempyre (CC BY)'
+                text:   '<i>Arcade Music Loop</i> - Joshuaempyre (CC BY)<br><i>Music Loop - Modern 1</i> - Blockfighter298 (CC 0)'
                 font.pixelSize: Theme.fontSizeSmall
                 wrapMode: Text.WordWrap
                 anchors {
@@ -308,7 +308,7 @@ Page {
 
             Label {
                 id: thanks
-                text: 'Database derived from \'noto\' by leszek. Thanks to wellef for helping me with some bugs.<br>Inspired by \'Canabalt\', \'Alto\'s Adventure\' and \'Papers Please\'.<br> Thanks to all of you!'
+                text: 'Database derived from \'noto\' by leszek. Thanks to wellef &amp; strayobject for helping me with some bugs and gukke for lots of great ideas.<br>Inspired by \'Canabalt\', \'Alto\'s Adventure\' and \'Papers Please\'.<br> Thanks to all of you!'
                 font.pixelSize: Theme.fontSizeSmall
                 wrapMode: Text.WordWrap
                 anchors {

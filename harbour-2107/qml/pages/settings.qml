@@ -51,6 +51,18 @@ Page {
         contentHeight: col.height + 10
         id: flick
 
+        PullDownMenu {
+            id: pullDownMenu
+
+            MenuItem {
+                text: "About 2107"
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("about.qml"))
+                }
+            }
+        }
+
+
         VerticalScrollDecorator{}
 
         Column {

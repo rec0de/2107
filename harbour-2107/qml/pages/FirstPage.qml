@@ -4,6 +4,8 @@ import QtQuick.Window 2.0
 import QtMultimedia 5.0
 import Sailfish.Silica 1.0
 import '../data.js' as DB
+import '../files.js' as Files
+import '../components'
 
 Page {
     id: page
@@ -25,6 +27,7 @@ Page {
     property bool mute: false // Mute music
     property bool tutorial: false // Show tutorial
     property int tut_index: 0 // Position in tutorial
+    property bool altsoundtrack: false // Use alternative soundtrack
 
 
     Item{
@@ -423,12 +426,91 @@ Page {
     // Shows pause UI
     function pausescreen(){
         pause();
-        menu.visible = true;
-        menu_back.color = rect.color;
-        menu_obj.text = getobjstring();
+
+        menu.show(rect.color);
+        datamenu.hide();
+        filelist.hide();
+        fileview.hide();
+        shop.hide();
+
+        hidemsgs();
+    }
+
+    // Selects a random file & shows data UI
+    function datascreen(){
+
+        // List of all files that have not been sold or owned
+        var impossible = DB.listseen();
+        var count = Files.names().length;
+        var possible = Array();
+
+        for(var i = 0; i < count; i++){
+            if(!contains(impossible, i)){
+                possible.push(i);
+            }
+        }
+
+        // If there are unseen files left
+        if(possible.length > 0){
+            // Choose possible file
+            var id = possible[Math.floor(Math.random() * possible.length)];
+
+            // Show data UI
+            pause();
+
+            menu.hide();
+            datamenu.show(rect.color, id);
+            filelist.hide();
+            fileview.hide();
+            shop.hide();
+
+            hidemsgs();
+        }
+    }
+
+    // Shows data UI
+    function filelistscreen(){
+        pause();
+
+        menu.hide();
+        datamenu.hide();
+        filelist.show(rect.color);
+        fileview.hide();
+        shop.hide();
+
+        hidemsgs();
+    }
+
+    // Shows file viewer UI
+    function fileviewscreen(id){
+        pause();
+
+        menu.hide();
+        datamenu.hide();
+        filelist.hide();
+        fileview.show(rect.color, id);
+        shop.hide();
+
+        hidemsgs();
+    }
+
+    // Shows shop UI
+    function shopmenuscreen(id){
+        pause();
+
+        menu.hide();
+        datamenu.hide();
+        filelist.hide();
+        fileview.hide();
+        shop.show(rect.color);
+
+        hidemsgs();
+    }
+
+    // Hides onscreen messages and pause button
+    function hidemsgs(){
         pausebutton.visible = false;
         message.visible = false;
-        //objective.visible = false;
         completed.visible = false;
         newhighscore.visible = false;
     }
@@ -725,9 +807,14 @@ Page {
         if(!page.mute){
             backgroundloop.play();
         }
+        datamenu.hide();
+        filelist.hide();
+        fileview.hide();
+        menu.hide();
+        shop.hide();
+
         page.running = true;
         message.visible = false;
-        menu.visible = false;
         pausebutton.visible = true;
         menu_back.color = 'transparent';
     }
@@ -743,6 +830,16 @@ Page {
         else{
             return Math.round(num/10000)/100 + 'm';
         }
+    }
+
+    // Checks if array of gadgets contains value
+    function contains(array, value) {
+        for (var i = 0; i < array.length; i++) {
+            if (array[i]['uid'] === value) {
+                return true;
+            }
+        }
+        return false;
     }
 
     ////////////////////////////////////
@@ -951,11 +1048,27 @@ Page {
         stats.jumps_total = DB.getstat(4);
         stats.distance_total = DB.getstat(2);
         stats.games_played = DB.getstat(12);
+
+        // Get OLED gadget status
+        if(DB.getgadget(0) === 1){
+            player.indicator = true;
+        }
+        else{
+            player.indicator = false;
+        }
+
+        // Get Mp3 gadget status
+        if(DB.getgadget(3) === 1){
+            page.altsoundtrack = true;
+        }
+        else{
+            page.altsoundtrack = false;
+        }
     }
 
     Audio{
         id: backgroundloop
-        source: '../aud/background_looped.mp3'
+        source: page.altsoundtrack ? '../aud/alternate.wav' : '../aud/background_looped.mp3'
         loops: Audio.Infinite
         muted: page.mute
         // Auido is looped in file a few times already because there is an ugly cut when looping here.
@@ -1186,6 +1299,8 @@ Page {
         }
     }
 
+    // Main menu
+
     Rectangle{
         id: menu
         visible: false;
@@ -1193,6 +1308,16 @@ Page {
         width: parent.width
         color: 'transparent'
         z: 10
+
+        function show(color){
+            visible = true;
+            menu_back.color = color;
+            menu_obj.text = getobjstring();
+        }
+
+        function hide(){
+            visible = false;
+        }
 
         // Block touch events to prevent game from resuming
         MouseArea{
@@ -1214,7 +1339,7 @@ Page {
         Rectangle{
             id: settingsbutton
             height: gamepix(6)
-            width: parent.width / 3
+            width: parent.width / 4
             anchors.left: parent.left
             z: 11
             color: 'transparent'
@@ -1236,8 +1361,8 @@ Page {
         Rectangle{
             id: statsbutton
             height: gamepix(6)
-            width: parent.width / 3
-            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width / 4
+            anchors.left: settingsbutton.right
             z: 11
             color: 'transparent'
 
@@ -1256,23 +1381,45 @@ Page {
         }
 
         Rectangle{
-            id: aboutbutton
+            id: filesbutton
             height: gamepix(6)
-            width: parent.width / 3
-            anchors.right: parent.right
+            width: parent.width / 4
+            anchors.right: shopbutton.left
             z: 11
             color: 'transparent'
 
             Label{
                 anchors.centerIn: parent
-                text: 'About'
+                text: 'Files'
                 font.pixelSize: Theme.fontSizeLarge
             }
 
             MouseArea{
                 anchors.fill: parent
                 onClicked:{
-                    pageStack.push(Qt.resolvedUrl("about.qml"))
+                    filelistscreen()
+                }
+            }
+        }
+
+        Rectangle{
+            id: shopbutton
+            height: gamepix(6)
+            width: parent.width / 4
+            anchors.right: parent.right
+            z: 11
+            color: 'transparent'
+
+            Label{
+                anchors.centerIn: parent
+                text: 'Shop'
+                font.pixelSize: Theme.fontSizeLarge
+            }
+
+            MouseArea{
+                anchors.fill: parent
+                onClicked:{
+                    shopmenuscreen()
                 }
             }
         }
@@ -1341,6 +1488,26 @@ Page {
         }
     }
 
+    // Data menu
+    DataScreen{
+        id: datamenu
+    }
+
+    // File list
+    FileListScreen{
+        id: filelist
+    }
+
+    // File viewer
+    ViewScreen{
+        id: fileview
+    }
+
+    // Shop
+    ShopScreen{
+        id: shop
+    }
+
     ParticleSystem{
         anchors.fill: parent
         z: 6
@@ -1392,6 +1559,17 @@ Page {
         property real prevy: 0 // Previous player height
         property bool djump: true // Able to doublejump
         property bool onground: true // Player is standing on ground
+        property bool indicator: false
+
+        // Jumpstate gadget
+        Rectangle{
+            visible: parent.indicator && parent.source !== '../img/player9.png' // Do not display for moose eegg
+            height: gamepix(1)
+            width: gamepix(1)
+            color: parent.djump ? '#e7e7e7' : '#3a3a3a'
+            x: gamepix(2)
+            y: gamepix(4)
+        }
     }
 
     Label{
