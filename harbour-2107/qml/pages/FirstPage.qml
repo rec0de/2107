@@ -28,6 +28,7 @@ Page {
     property bool tutorial: false // Show tutorial
     property int tut_index: 0 // Position in tutorial
     property bool altsoundtrack: false // Use alternative soundtrack
+    property real skycolor: 306/360
 
 
     Item{
@@ -260,13 +261,16 @@ Page {
 
         // Die if out of screen
         if(player.x < -player.width * 1.5 || player.y > page.height){
-            reset();
+            page.glitch = 3;
+            glitch_transition.start();
         }
 
         // Background 'parallax' effect based on player.y
         background.y = page.offset - gamepix(0.05 * (realpix(player.y) - 20));
         middle.y = page.offset - gamepix(0.08 * (realpix(player.y) - 20));
 
+        slowtick(); // Ehh let's just do one tick function - I don't think the separation changed much anyway
+        timecycle();
     }
 
 
@@ -327,7 +331,7 @@ Page {
             else if(chance(2)){
                 // Line offset effect
                 background.source = '../img/glitch/back_lines_'+(Math.floor(Math.random()*3)+1)+'.png';
-                middle.source = '../img/glitch/middle_lines_'+(Math.floor(Math.random()*3)+1)+'.png';;
+                middle.source = '../img/glitch/middle_lines_'+(Math.floor(Math.random()*3)+1)+'.png';
             }
         }
         else if(page.glitch === 2){
@@ -349,10 +353,22 @@ Page {
                 overlay.x = - Math.floor(Math.random()*(gamepix(150)-page.width));
                 overlay.y = - Math.floor(Math.random()*gamepix(20));
             }
-
         }
-
-        else{
+        // Heavy glitching as transition
+        else if(page.glitch === 3){
+            if(chance(4)){ // Change overlay position
+                overlay.x = - Math.floor(Math.random()*(gamepix(150)-page.width));
+                overlay.y = - Math.floor(Math.random()*gamepix(20));
+            }
+            if(chance(2)){ // Change background glitch
+                background.source = '../img/glitch/back_lines_'+(Math.floor(Math.random()*3)+1)+'.png';
+                middle.source = '../img/glitch/middle_lines_'+(Math.floor(Math.random()*3)+1)+'.png';
+            }
+            if(chance(2)){  // Change sky hue
+                page.skycolor = Math.random();
+            }
+        }
+        else {
 
             // Start glitching
             var mult = Math.round(60/(realpix(stats.distance)/1000)) + 10;
@@ -384,6 +400,8 @@ Page {
                 i--;
             }
         }
+
+        timecycle();
     }
 
     // Prepares new game start
@@ -663,17 +681,12 @@ Page {
         var gametime = midnight % (60*4);
         page.gametime = gametime;
 
-        // Calculate multiplicator
-        var mult = -0.35*Math.cos(gametime * (Math.PI/120)) + 0.65;
+        // Change background color
+        const mult = -0.35 * Math.cos(gametime * (Math.PI / 120)) + 0.45;
 
         // Calculate color shade
-        var basec = 132; // Base color
-
-        var newc = Math.floor(basec * mult);
-        var stringc = (newc < 16 ? "0" : "" ) + newc.toString(16);
-        var color = stringc + stringc + stringc;
-
-        rect.color = '#' + color;
+        const lightness = Math.round(mult*1000)/10; //Math.floor(132 * mult);
+        rect.color = Qt.hsla(page.skycolor, 0.85, mult, 1);
 
         // Move moon
         const baseX = page.width / 2;
@@ -1084,15 +1097,6 @@ Page {
         onTriggered: tick()
     }
 
-    // Secondary slower ticker
-    Timer {
-        id: slowticker
-        interval: 100
-        running: page.running
-        repeat: true
-        onTriggered: slowtick()
-    }
-
     // Runs when game paused but open
     Timer {
         id: pauseticker
@@ -1111,13 +1115,13 @@ Page {
         onTriggered: memclean()
     }
 
-    // Changes background color
+    // Heavy glitching on death
     Timer {
-        id: daytime
-        interval: 35
-        running: Qt.application.active && pageStack.currentPage == page
-        repeat: true
-        onTriggered: timecycle()
+        id: glitch_transition
+        interval: 300
+        running: false
+        repeat: false
+        onTriggered: reset()
     }
 
     // Shows double jump tutorial
@@ -1166,9 +1170,6 @@ Page {
         width: parent.width
         height: parent.height
         color: '#bbbbbb'
-        Behavior on color {
-            ColorAnimation {duration: 700 }
-        }
         MouseArea {
             // based on Swipe recognition by Gianluca from https://forum.qt.io/topic/39641/swipe-gesture-with-qt-quick-2-0-and-qt-5-2/4  - Thanks!
             anchors.fill: parent
@@ -1325,7 +1326,7 @@ Page {
 
         function show(color){
             visible = true;
-            menu_back.color = color;
+            menu_back.color = "black";
             menu_obj.text = getobjstring();
         }
 
@@ -1343,10 +1344,10 @@ Page {
             anchors.fill: parent
             z: 10
             color: 'transparent'
-            opacity: 0.6
+            opacity: 0.4
 
             Behavior on color {
-                ColorAnimation {duration: 700 }
+                ColorAnimation {duration: 400 }
             }
         }
 
