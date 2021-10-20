@@ -16,14 +16,14 @@ Page {
     property real speed: 3.5 // Movement speed
     property int offset: rect.height - background.height
     property real gravity: 0.04 // Downward accelleration per tick
-    property var birds: new Array() // Contains spawned doves
-    property var track: new Array() // Contains game track
+    property var birds: [] // Contains spawned doves
+    property var track: [] // Contains game track
     property int trackcount: 23 // Number of available tracks
     property int glitch: 0 // O: No glitch 1: Lines Glitch 2: Overlay Glitch
     property var terrain: Array() // Parcour height for each gamepixel
     property int terrainindex: 0 // Height of gamepixel at x = 0
     property real realindex: 0
-    property int gametime: 0 // Ingame time
+    property real gametime: 0 // Ingame time
     property bool mute: false // Mute music
     property bool tutorial: false // Show tutorial
     property int tut_index: 0 // Position in tutorial
@@ -47,8 +47,8 @@ Page {
         property int objective_basecount: 0
         property int level: 0
 
-        property var lvl_type:  new Array(3,   7,  4, 2,   1,  7, 5,   0,  2,    1,   4,  7,  3,     0,  5,    2,    3,     1,   4,   5,    3,     0,  6)
-        property var lvl_count: new Array(100, 2, 10, 750, 40, 5, 100, 25, 1000, 150, 50, 10, 20000, 50, 1000, 2500, 50000, 750, 150, 2000, 75000, 80, 0)
+        property var lvl_type:  [3,   7,  4, 2,   1,  7, 5,   0,  2,    1,   4,  7,  3,     0,  5,    2,    3,     1,   4,   5,    3,     0,  6]
+        property var lvl_count: [100, 2, 10, 750, 40, 5, 100, 25, 1000, 150, 50, 10, 20000, 50, 1000, 2500, 50000, 750, 150, 2000, 75000, 80, 0]
 
         property int highscore: 0
         property bool highscore_muted: false // Disables high score messages
@@ -190,7 +190,7 @@ Page {
         // Move track images
         var highestx = -100000;
         var highestx_width = page.width;
-        for (var i = 0; i < track.length; i++){
+        for (i = 0; i < track.length; i++){
 
             if(track[i].x > 0 - track[i].width){
                 track[i].x = track[i].x - speed;
@@ -655,15 +655,9 @@ Page {
 
     // Calculates grey shade of background depending on current time
     function timecycle(){
-
-        var currentTime = new Date ( );
-
-        var currentHours = currentTime.getHours();
-        var currentMinutes = currentTime.getMinutes();
-        var currentSeconds = currentTime.getSeconds();
-
         // Get seconds from midnight
-        var midnight = (currentHours*60*60)+(currentMinutes*60)+currentSeconds; // Between 0 and 86400
+        const ct = new Date();
+        var midnight = ct.getHours()*60*60 + ct.getMinutes()*60 + ct.getSeconds() + ct.getMilliseconds()/1000; // Between 0 and 86400
 
         // Each day-night cycle lasts 4 mins
         var gametime = midnight % (60*4);
@@ -680,7 +674,14 @@ Page {
         var color = stringc + stringc + stringc;
 
         rect.color = '#' + color;
-        return true;
+
+        // Move moon
+        const baseX = page.width / 2;
+        const baseY = page.height * 0.8;
+        const radius = page.height * 0.8;
+        var angle = gametime <= 45 ? Math.PI * (gametime / 90 + 0.5) : Math.PI * (gametime / 100 - 1.9);
+        moon.x = baseX + Math.cos(angle) * radius;
+        moon.y = baseY - Math.sin(angle) * radius;
     }
 
     // Checks for completed objectives
@@ -928,7 +929,7 @@ Page {
         page.track = Array();
 
         // Delete spawned doves
-        for (var i = 0; i < page.birds.length; i++){
+        for (i = 0; i < page.birds.length; i++){
             birds[i].despawn();
         }
         page.birds = Array();
@@ -1096,7 +1097,7 @@ Page {
     Timer {
         id: pauseticker
         interval: 35
-        running: !page.running && Qt.application.active && pageStack.currentPage === page
+        running: !page.running && Qt.application.active && pageStack.currentPage == page
         repeat: true
         onTriggered: pausetick()
     }
@@ -1113,8 +1114,8 @@ Page {
     // Changes background color
     Timer {
         id: daytime
-        interval: 3000
-        running: Qt.application.active && pageStack.currentPage === page
+        interval: 35
+        running: Qt.application.active && pageStack.currentPage == page
         repeat: true
         onTriggered: timecycle()
     }
@@ -1161,7 +1162,7 @@ Page {
     // Solid color background
     Rectangle {
         id: rect
-        z: 1
+        z: 0
         width: parent.width
         height: parent.height
         color: '#bbbbbb'
@@ -1217,6 +1218,19 @@ Page {
                 }
             }
         }
+    }
+
+    // Moon
+    Image {
+        x: 0
+        y: 0
+        z: 1
+        id: moon
+        source: "../img/moon.png"
+        smooth: false
+        opacity: 1
+        width: gamepix(sourceSize.width)
+        height: gamepix(sourceSize.height)
     }
 
     // Second background layer
